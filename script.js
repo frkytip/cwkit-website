@@ -1,45 +1,49 @@
-// Set this to a real inbox before publishing. Example: "hello@yourdomain.com"
-const CONTACT_EMAIL = "contact@cwkit.in";
-
-document.getElementById("year").textContent = new Date().getFullYear();
-
-const menuButton = document.querySelector(".menu-toggle");
-const nav = document.querySelector(".nav");
-menuButton.addEventListener("click", () => {
-  const isOpen = nav.classList.toggle("open");
-  menuButton.setAttribute("aria-expanded", String(isOpen));
-  menuButton.setAttribute("aria-label", isOpen ? "Close navigation" : "Open navigation");
-});
-nav.querySelectorAll("a").forEach(link => link.addEventListener("click", () => {
-  nav.classList.remove("open");
-  menuButton.setAttribute("aria-expanded", "false");
-}));
-
-document.querySelectorAll("[data-service]").forEach(link => {
-  link.addEventListener("click", () => {
-    const service = document.getElementById("service");
-    const value = link.dataset.service;
-    [...service.options].forEach(option => {
-      if (option.text.toLowerCase() === value.toLowerCase()) service.value = option.text;
-    });
-  });
-});
 
 const form = document.getElementById("contact-form");
 const note = document.getElementById("form-note");
-form.addEventListener("submit", event => {
+
+form.addEventListener("submit", async (event) => {
   event.preventDefault();
+
   if (!form.reportValidity()) return;
-  if (!CONTACT_EMAIL) {
-    note.textContent = "The enquiry form is ready, but no receiving email is configured yet. Open script.js and set CONTACT_EMAIL to your business inbox before publishing.";
-    note.classList.add("notice");
-    return;
-  }
+
   const data = new FormData(form);
-  const subject = encodeURIComponent(`CWKIT enquiry — ${data.get("service")}`);
-  const body = encodeURIComponent(
-    `Name: ${data.get("name")}\nWork email: ${data.get("email")}\nCompany: ${data.get("company") || "Not provided"}\nService: ${data.get("service")}\n\nRequirement:\n${data.get("message")}`
-  );
-  https://cwkit-email-api.kshitijrai302.workers.dev
-  note.textContent = "Your email application should open with the enquiry details. Please send the email to complete your enquiry.";
+
+  const payload = {
+    name: data.get("name"),
+    email: data.get("email"),
+    company: data.get("company") || "",
+    service: data.get("service"),
+    message: data.get("message")
+  };
+
+  note.textContent = "Sending your enquiry...";
+  note.classList.remove("notice");
+
+  try {
+    const response = await fetch(
+      "https://cwkit-email-api.kshitijrai302.workers.dev",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.error || "Unable to send enquiry.");
+    }
+
+    note.textContent = "Thank you! Your enquiry has been sent successfully.";
+    form.reset();
+
+  } catch (error) {
+    console.error("Contact form error:", error);
+    note.textContent = "Sorry, your enquiry could not be sent. Please try again later.";
+    note.classList.add("notice");
+  }
 });
