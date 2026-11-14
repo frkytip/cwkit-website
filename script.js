@@ -40,6 +40,6 @@ form.addEventListener("submit", event => {
   const body = encodeURIComponent(
     `Name: ${data.get("name")}\nWork email: ${data.get("email")}\nCompany: ${data.get("company") || "Not provided"}\nService: ${data.get("service")}\n\nRequirement:\n${data.get("message")}`
   );
-  window.location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
+  https://cwkit-email-api.kshitijrai302.workers.dev
   note.textContent = "Your email application should open with the enquiry details. Please send the email to complete your enquiry.";
 });
