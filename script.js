@@ -1,5 +1,5 @@
 // Set this to a real inbox before publishing. Example: "hello@yourdomain.com"
-const CONTACT_EMAIL = "";
+const CONTACT_EMAIL = "contact@cwkit.in";
 
 document.getElementById("year").textContent = new Date().getFullYear();
 
