@@ -20,7 +20,22 @@
   <div class="announcement"><span class="status-dot"></span> Independent IT consulting · India &amp; worldwide</div>
   <header class="site-header">
     <a class="brand" href="#home" aria-label="CWKIT home"><span class="brand-mark">C<span>W</span></span><span class="brand-name">CWKIT<span class="brand-period">.</span></span></a>
-    <button class="menu-toggle" aria-label="Open navigation" aria-expanded="false"><span></span><span></span></button>
+    <button
+  class="menu-toggle"
+  type="button"
+  aria-label="Open navigation"
+  aria-expanded="false"
+  onclick="
+    const nav = this.parentElement.querySelector('.nav');
+    const open = !nav.classList.contains('open');
+    nav.classList.toggle('open', open);
+    nav.style.display = open ? 'flex' : 'none';
+    this.setAttribute('aria-expanded', String(open));
+    this.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
+  "
+>
+  <span></span><span></span>
+</button>
     <nav class="nav" aria-label="Main navigation">
       <a href="#services">Services</a><a href="#approach">Our approach</a><a href="#about">About</a><a href="#faq">FAQ</a>
       <a class="nav-cta" href="mailto:contact@cwkit.in">Let's talk <span>↗</span></a>
